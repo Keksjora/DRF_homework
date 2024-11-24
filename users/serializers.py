@@ -15,3 +15,9 @@ class CustomsUserDetailSerializer(ModelSerializer):
     class Meta:
         model = CustomsUser
         fields = ["id", "email", "phone_number", "avatar", "city", "payment_history"]
+
+
+class CustomsUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomsUser
+        fields = "__all__"
