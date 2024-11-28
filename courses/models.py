@@ -51,3 +51,13 @@ class Lesson(models.Model):
         verbose_name = "урок"
         verbose_name_plural = "уроки"
         ordering = ["title"]
+
+
+class Subscription(models.Model):
+    """Модель подписки на обновление курса"""
+
+    user = models.ForeignKey("users.CustomsUser", on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("user", "course")

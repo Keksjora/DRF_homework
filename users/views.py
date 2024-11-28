@@ -6,11 +6,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import CustomsUser, Payments
-from users.serializers import (
-    CustomsUserDetailSerializer,
-    CustomsUserSerializer,
-    PaymentsSerializer,
-)
+from users.serializers import (CustomsUserDetailSerializer,
+                               CustomsUserSerializer, PaymentsSerializer)
 
 
 class PaymentsViewSet(ModelViewSet):
