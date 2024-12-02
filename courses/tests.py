@@ -115,7 +115,7 @@ class LessonPlatformTestCase(APITestCase):
             description="Description",
             course=self.course,
             video_link="http://www.youtube.com/1",
-            owner=self.user
+            owner=self.user,
         )
 
         response = self.client.delete(f"/lesson/delete/{lesson.id}/")
