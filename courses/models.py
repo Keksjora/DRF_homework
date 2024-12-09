@@ -17,6 +17,7 @@ class Course(models.Model):
         verbose_name="владелец",
         help_text="укажите владельца",
     )
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

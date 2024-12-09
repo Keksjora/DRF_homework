@@ -1,4 +1,7 @@
+import datetime
+
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status, views
@@ -8,8 +11,12 @@ from rest_framework.viewsets import ModelViewSet
 
 from courses.models import Course, Lesson, Subscription
 from courses.paginators import CoursePaginator, LessonPaginator
-from courses.serializers import (CourseDetailSerializer, CourseSerializer,
-                                 LessonSerializer)
+from courses.serializers import (
+    CourseDetailSerializer,
+    CourseSerializer,
+    LessonSerializer,
+)
+from courses.task import send_course_update_notification
 from users.permissions import IsModers, IsOwner
 
 
@@ -42,6 +49,10 @@ class CourseViewSet(ModelViewSet):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+        now = timezone.now()
+        # Проверяем время последнего обновления
+        if course.updated_at < now - datetime.timedelta(hours=4):
+            send_course_update_notification.delay(course.id)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
