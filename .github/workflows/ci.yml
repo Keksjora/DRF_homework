@@ -1,0 +1,36 @@
+name: Django CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.8'
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Set up PostgreSQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          sudo service postgresql start
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD '123456789';"
+          sudo -u postgres psql -c "CREATE DATABASE courses;"
+          sudo -u postgres psql -c "CREATE USER your_user WITH PASSWORD '123456789';"
+          sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE courses TO postgres;"
+        
+      - name: Run migrate
+        run: python manage.py migrate
+
+      - name: Run tests
+        run: python manage.py test
