@@ -1,19 +1,25 @@
-name: Django CI
+name: CI
 
 on: [push, pull_request]
+
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: '3.12.8'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: |
@@ -28,9 +34,30 @@ jobs:
           sudo -u postgres psql -c "CREATE DATABASE courses;"
           sudo -u postgres psql -c "CREATE USER your_user WITH PASSWORD '123456789';"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE courses TO postgres;"
-        
+
+      - name: Run makemigrations
+        run: |
+          poetry run python manage.py makemigrations
+
       - name: Run migrate
-        run: python manage.py migrate
+        run: |
+          poetry run python manage.py migrate
 
       - name: Run tests
-        run: python manage.py test
+        run: |
+          poetry run python manage.py test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    if: success()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to server
+        run: |
+          sshpass -p "${{ secrets.ROOT_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@85.92.111.109 "cd /path/to/your/app && git pull && poetry install && sudo systemctl restart nginx"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
