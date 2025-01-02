@@ -22,7 +22,6 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
-          echo "../.env" >> $GITHUB_PATH
 
       - name: Set up PostgreSQL
         run: |
