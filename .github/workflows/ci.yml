@@ -2,17 +2,15 @@ name: CI
 
 on: [push, pull_request]
 
-
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
@@ -25,15 +23,22 @@ jobs:
         run: |
           poetry install
 
-      - name: Set up PostgresSQL
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-          sudo service postgresql start
-          sudo -u postgres psql -c "ALTER USER postgres PASSWORD '123456789';"
-          sudo -u postgres psql -c "CREATE DATABASE courses;"
-          sudo -u postgres psql -c "CREATE USER your_user WITH PASSWORD '123456789';"
-          sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE courses TO postgres;"
+          poetry install
 
       - name: Run makemigrations
         run: |
@@ -55,6 +60,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.1
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
-            - name: Deploy to Server
-              run: |
-                ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          EQF
