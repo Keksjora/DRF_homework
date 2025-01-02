@@ -23,6 +23,16 @@ jobs:
         run: |
           poetry install
 
+      - name: Set up PostgreSQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          sudo service postgresql start
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD '569103Max';"
+          sudo -u postgres psql -c "CREATE DATABASE courses;"
+          sudo -u postgres psql -c "CREATE USER your_user WITH PASSWORD '569103Max';"
+          sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE courses TO postgres;"
+
   test:
     needs: lint
     runs-on: ubuntu-latest
