@@ -36,10 +36,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
-        run: |
-          poetry install
-
       - name: Run makemigrations
         run: |
           poetry run python manage.py makemigrations
