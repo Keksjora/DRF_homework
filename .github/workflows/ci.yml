@@ -68,6 +68,6 @@ jobs:
             ssh-private-key: ${{ secrets.SSH_KEY }}
         - name: Deploy to Server
           run: |
-            ssh -o StrictHostKeyChecking=no -t ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            ssh -o StrictHostKeyChecking=no -t user@localhost << 'EOF'
             echo "Deploying to server"
             EOF
