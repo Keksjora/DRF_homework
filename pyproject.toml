@@ -22,11 +22,6 @@ drf-yasg = "^1.21.8"
 django-celery-beat = "^2.7.0"
 pillow = "^11.1.0"
 
-[tool.poetry.packages]
-packages = [
-    { include = "drf-homework" }
-]
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
