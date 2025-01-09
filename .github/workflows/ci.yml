@@ -62,7 +62,7 @@ jobs:
           uses: webfactory/ssh-agent@v0.7.0
           with:
             ssh-private-key: ${{ secrets.SSH_KEY }}
-            ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
+#            ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
         - name: Deploy to Server
           run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}@$${{ secrets.ROOT_PASSWORD }} << 'EOF'
